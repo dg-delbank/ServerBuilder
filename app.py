@@ -1,5 +1,6 @@
 import os
 import subprocess
+import time
 
 print(' Default:\n-------1.Portainer\n-------2.Nginx Proxy Manager\n-------3.Jenkins')
 print('Para seleção manual digite o(s) valor(es) numério(s), separado(s) por vírgula(s).')
@@ -53,6 +54,8 @@ services:
             comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', name]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
             f.write(f'{name}:{ip}\n')
+
+            time.sleep(5)
             print('-----------Jenkins Admin Password:')
             os.system(f'docker exec {name} cat /var/jenkins_home/secrets/initialAdminPassword')
 
