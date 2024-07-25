@@ -33,7 +33,7 @@ services:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
 ''')
-            os.system('docker compose up -d')
+        os.system('docker compose up -d')
 
     if '3' in choice:
         name = input('Digite o nome do container do Jenkins: ') or 'jenkins-delbank-hml-master'
