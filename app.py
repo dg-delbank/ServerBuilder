@@ -53,6 +53,8 @@ services:
             comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', name]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
             f.write(f'{name}:{ip}\n')
+            print('-----------Jenkins Admin Password:')
+            os.system(f'docker exec {name} cat /var/jenkins_home/secrets/initialAdminPassword')
 
         else:
             print('Opção não encontrada.')
