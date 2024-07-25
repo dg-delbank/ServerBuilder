@@ -24,6 +24,8 @@ with open('ips.txt', 'w') as f:
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
             f.write(f'{name}:{ip}\n')
 
+            os.system('sudo ufw allow 9443')
+
         if '2' in choice:
             name = input('Digite o nome do container do Nginx: ') or 'nginx-proxy-manager-delbank-hml-master'
             with open('docker-compose.yml', 'w') as docker_compose_file:
@@ -47,6 +49,11 @@ services:
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
             f.write(f'{name}:{ip}\n')
 
+            os.system('sudo ufw allow 80')
+            os.system('sudo ufw allow 81')
+            os.system('sudo ufw allow 443')
+            os.system(f'sudo ufw allow from {ip}')
+
         if '3' in choice:
             name = input('Digite o nome do container do Jenkins: ') or 'jenkins-delbank-hml-master'
             os.system(f'docker run -d -it --restart always -u root -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --name {name} jenkins/jenkins:latest')
@@ -55,6 +62,8 @@ services:
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
             f.write(f'{name}:{ip}\n')
 
+            os.system('sudo ufw allow 8080')
+            
             time.sleep(5)
             print('-----------Jenkins Admin Password:')
             os.system(f'docker exec {name} cat /var/jenkins_home/secrets/initialAdminPassword')
@@ -63,5 +72,21 @@ services:
             print('Opção não encontrada.')
 
     verify_choice(choice)
+
+print('Ativando Firewall...')
+daemon_json_content = '''
+{
+  "iptables": false
+}
+'''
+try:
+    with open('/etc/docker/daemon.json', 'w') as file:
+        file.writelines(daemon_json_content)
+except Exception as ex:
+    print('Erro ao criar daemon.json: ' + ex)
+
+os.system('sudo ufw default deny incoming')
+os.system('sudo ufw enable')
+print('Firewall ativo.')
 
 print('Fim do seja lá o que acabou de acontecer.')
