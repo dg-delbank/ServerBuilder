@@ -1,6 +1,6 @@
 import os
 
-print(' Default:\n-------1.Portainer\n-------2.Nginx Proxy Manager\n-------3.Jenkinsz')
+print(' Default:\n-------1.Portainer\n-------2.Nginx Proxy Manager\n-------3.Jenkins')
 print('Para seleção manual digite o(s) valor(es) numério(s), separado(s) por vírgula(s).')
 
 try:
