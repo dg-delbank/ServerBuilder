@@ -26,19 +26,19 @@ with open('ips.txt', 'w') as f:
             name = input('Digite o nome do container do Nginx: ') or 'nginx-proxy-manager-delbank-hml-master'
             with open('docker-compose.yml', 'w') as docker_compose_file:
                 docker_compose_file.write(f'''version: '3.8'
-    services:
-      app:
-        container_name: {name}
-        image: 'jc21/nginx-proxy-manager:latest'
-        restart: unless-stopped
-        ports:
-          - '80:80'
-          - '81:81'
-          - '443:443'
-        volumes:
-          - ./data:/data
-          - ./letsencrypt:/etc/letsencrypt
-    ''')
+services:
+  app:
+    container_name: {name}
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+''')
             os.system('docker compose up -d')
 
             ip = subprocess.check_output(f"docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' {name}", shell=True).strip()
