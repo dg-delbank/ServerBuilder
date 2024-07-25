@@ -64,7 +64,7 @@ services:
 
             os.system('sudo ufw allow 8080')
             
-            time.sleep(5)
+            time.sleep(10)
             print('-----------Jenkins Admin Password:')
             os.system(f'docker exec {name} cat /var/jenkins_home/secrets/initialAdminPassword')
 
