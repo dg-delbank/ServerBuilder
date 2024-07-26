@@ -16,23 +16,39 @@ except Exception as ex:
 with open('ips.txt', 'w') as f:
     def verify_choice(choice):
         if '1' in choice:
-            name = input('Digite o nome do container do Portainer: ') or 'portainer-delbank-hml-master'
-            os.system(f'docker volume create portainer_data')
-            os.system(f'docker run -d -p 8000:8000 -p 9443:9443 --name {name} --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest')
+            namePortainer = input('Digite o nome do container do Portainer: ') or 'portainer-delbank-hml-master'
 
-            comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', name]
+            if namePortainer.strip() == 'prod':
+                namePortainer = 'portainer-delbank-prod-master'
+
+        if '2' in choice:
+            nameNginx = input('Digite o nome do container do Nginx: ') or 'nginx-proxy-manager-delbank-hml-master'
+
+            if nameNginx.strip() == 'prod':
+                nameNginx = 'nginx-proxy-manager-delbank-prod-master'
+
+        if '3' in choice:
+            nameJenkins = input('Digite o nome do container do Jenkins: ') or 'jenkins-delbank-hml-master'
+
+            if nameJenkins.strip() == 'prod':
+                nameJenkins = 'jenkins-delbank-prod-master'
+
+        if '1' in choice:
+            os.system(f'docker volume create portainer_data')
+            os.system(f'docker run -d -p 8000:8000 -p 9443:9443 --name {namePortainer} --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest')
+
+            comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', namePortainer]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
-            f.write(f'{name}:{ip}\n')
+            f.write(f'{namePortainer}:{ip}\n')
 
             os.system('sudo ufw allow 9443')
 
         if '2' in choice:
-            name = input('Digite o nome do container do Nginx: ') or 'nginx-proxy-manager-delbank-hml-master'
             with open('docker-compose.yml', 'w') as docker_compose_file:
                 docker_compose_file.write(f'''version: '3.8'
 services:
   app:
-    container_name: {name}
+    container_name: {nameNginx}
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
@@ -45,9 +61,9 @@ services:
 ''')
             os.system('docker compose up -d')
 
-            comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', name]
+            comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', nameNginx]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
-            f.write(f'{name}:{ip}\n')
+            f.write(f'{nameNginx}:{ip}\n')
 
             os.system('sudo ufw allow 80')
             os.system('sudo ufw allow 81')
@@ -55,18 +71,17 @@ services:
             os.system(f'sudo ufw allow from {ip}')
 
         if '3' in choice:
-            name = input('Digite o nome do container do Jenkins: ') or 'jenkins-delbank-hml-master'
             os.system(f'docker run -d -it --restart always -u root -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --name {name} jenkins/jenkins:latest')
 
-            comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', name]
+            comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', nameJenkins]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
-            f.write(f'{name}:{ip}\n')
+            f.write(f'{nameJenkins}:{ip}\n')
 
             os.system('sudo ufw allow 8080')
             
-            time.sleep(10)
+            time.sleep(15)
             print('-----------Jenkins Admin Password:')
-            os.system(f'docker exec {name} cat /var/jenkins_home/secrets/initialAdminPassword')
+            os.system(f'docker exec {nameJenkins} cat /var/jenkins_home/secrets/initialAdminPassword')
 
         else:
             print('Opção não encontrada.')
@@ -82,11 +97,13 @@ daemon_json_content = '''
 try:
     with open('/etc/docker/daemon.json', 'w') as file:
         file.writelines(daemon_json_content)
+    
+    os.system('sudo ufw default deny incoming')
+    os.system('sudo ufw enable')
+    print('Firewall ativo.')
+
 except Exception as ex:
     print('Erro ao criar daemon.json: ' + ex)
 
-os.system('sudo ufw default deny incoming')
-os.system('sudo ufw enable')
-print('Firewall ativo.')
 
 print('Fim do seja lá o que acabou de acontecer.')
