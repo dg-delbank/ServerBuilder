@@ -71,7 +71,7 @@ services:
             os.system(f'sudo ufw allow from {ip}')
 
         if '3' in choice:
-            os.system(f'docker run -d -it --restart always -u root -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --name {name} jenkins/jenkins:latest')
+            os.system(f'docker run -d -it --restart always -u root -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker --name {nameJenkins} jenkins/jenkins:latest')
 
             comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', nameJenkins]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
