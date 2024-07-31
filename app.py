@@ -91,7 +91,8 @@ services:
 print('Ativando Firewall...')
 daemon_json_content = '''
 {
-  "iptables": false
+  "iptables": false,
+  "dns": ["8.8.8.8", "8.8.4.4"]
 }
 '''
 try:
