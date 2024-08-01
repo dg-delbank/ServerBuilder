@@ -100,7 +100,7 @@ try:
         file.writelines(daemon_json_content)
     
     os.system('sudo ufw default deny incoming')
-    os.system('sudo ufw enable')
+    os.system('yes | sudo ufw enable')
     print('Firewall ativo.')
 
 except Exception as ex:
