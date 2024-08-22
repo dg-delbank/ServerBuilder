@@ -44,6 +44,8 @@ with open('ips.txt', 'w') as f:
             os.system('sudo ufw allow 9443')
 
         if '2' in choice:
+            os.system(f'sudo mkdir -p /srv/nginx-proxy-manager/data & sudo mkdir -p /srv/nginx-proxy-manager/letsencrypt && sudo chown -R $USER:$USER /srv/nginx-proxy-manager')
+
             with open('docker-compose.yml', 'w') as docker_compose_file:
                 docker_compose_file.write(f'''version: '3.8'
 services:
@@ -56,8 +58,8 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /srv/nginx-proxy-manager/data:/data
+      - /srv/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
 ''')
             os.system('docker compose up -d')
 
