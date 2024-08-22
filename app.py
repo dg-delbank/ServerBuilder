@@ -61,7 +61,9 @@ services:
 
 volumes:
   nginx_data:
+    name: nginx_data
   nginx_letsencrypt:
+    name: nginx_letsencrypt
 ''')
             os.system('docker compose up -d')
 
