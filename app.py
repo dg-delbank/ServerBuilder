@@ -2,7 +2,7 @@ import os
 import subprocess
 import time
 
-print(' Default:\n-------1.Portainer\n-------2.Nginx Proxy Manager\n-------3.Jenkins')
+print(' Default: ALL\n-------1.Portainer\n-------2.Nginx Proxy Manager\n-------3.Jenkins')
 print('Para seleção manual digite o(s) valor(es) numério(s), separado(s) por vírgula(s).')
 
 try:
@@ -16,19 +16,19 @@ except Exception as ex:
 with open('ips.txt', 'w') as f:
     def verify_choice(choice):
         if '1' in choice:
-            namePortainer = input('Digite o nome do container do Portainer: ') or 'portainer-delbank-hml-master'
+            namePortainer = input('Digite o nome do container do Portainer (Default:portainer-delbank-hml-master): ') or 'portainer-delbank-hml-master'
 
             if namePortainer.strip() == 'prod':
                 namePortainer = 'portainer-delbank-prod-master'
 
         if '2' in choice:
-            nameNginx = input('Digite o nome do container do Nginx: ') or 'nginx-proxy-manager-delbank-hml-master'
+            nameNginx = input('Digite o nome do container do Nginx (Default:nginx-proxy-manager-delbank-hml-master): ') or 'nginx-proxy-manager-delbank-hml-master'
 
             if nameNginx.strip() == 'prod':
                 nameNginx = 'nginx-proxy-manager-delbank-prod-master'
 
         if '3' in choice:
-            nameJenkins = input('Digite o nome do container do Jenkins: ') or 'jenkins-delbank-hml-master'
+            nameJenkins = input('Digite o nome do container do Jenkins (Default:jenkins-delbank-hml-master): ') or 'jenkins-delbank-hml-master'
 
             if nameJenkins.strip() == 'prod':
                 nameJenkins = 'jenkins-delbank-prod-master'
