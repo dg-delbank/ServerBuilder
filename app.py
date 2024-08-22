@@ -79,6 +79,7 @@ volumes:
         if '3' in choice:
             os.system('docker volume create jenkins_data')
             os.system(f'docker run -d -it --restart always -u root -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock -v jenkins_data:/var/jenkins_home --name {nameJenkins} jenkins/jenkins:latest')
+            os.system(f'docker exec {nameJenkins} chown -R 1000:1000 /var/jenkins_home')
 
             comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', nameJenkins]
             ip = subprocess.check_output(comando, stderr=subprocess.STDOUT, text=True)
