@@ -88,23 +88,22 @@ services:
 
     verify_choice(choice)
 
-print('Ativando Firewall...')
-daemon_json_content = '''
-{
-  "iptables": false,
-  "dns": ["8.8.8.8", "8.8.4.4"]
-}
-'''
-try:
-    with open('/etc/docker/daemon.json', 'w') as file:
-        file.writelines(daemon_json_content)
+#print('Ativando Firewall...')
+#daemon_json_content = '''
+#{
+# "iptables": false,
+#  "dns": ["8.8.8.8", "8.8.4.4"]
+#}
+#'''
+#try:
+#    with open('/etc/docker/daemon.json', 'w') as file:
+#        file.writelines(daemon_json_content)
     
-    os.system('sudo ufw default deny incoming')
-    os.system('yes | sudo ufw enable')
-    print('Firewall ativo.')
+#    os.system('sudo ufw default deny incoming')
+#    os.system('yes | sudo ufw enable')
+#    print('Firewall ativo.')
 
-except Exception as ex:
-    print('Erro ao criar daemon.json: ' + ex)
-
+#except Exception as ex:
+#    print('Erro ao criar daemon.json: ' + ex)
 
 print('Fim do seja lá o que acabou de acontecer.')
