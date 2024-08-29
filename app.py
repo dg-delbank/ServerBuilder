@@ -78,6 +78,7 @@ volumes:
 
         if '3' in choice:
             os.system('docker volume create jenkins_data')
+            os.system('sudo chown -R 1000:1000 /var/lib/docker/volumes/jenkins_data/')
             os.system(f'docker run -d --restart always -p 8080:8080 -p 50000:50000 -v /var/run/docker.sock:/var/run/docker.sock -v jenkins_data:/var/jenkins_home --name {nameJenkins} jenkins/jenkins:latest')
 
             comando = ['docker', 'inspect', '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}', nameJenkins]
